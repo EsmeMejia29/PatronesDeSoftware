@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patrón Iterator - Patrones de Diseño</title>
+    <link rel="stylesheet" href="/css/patrones.css">
+</head>
+<body>
+    <h1>Patrones de Diseño de Software</h1>
+    <h2>Patrón Iterator</h2>
+    <p class="lead">El patrón Iterator permite acceder secuencialmente a los elementos de un objeto agregado sin exponer su representación subyacente.</p>
+
+    <h3>El Problema</h3>
+    <p>
+        Imagina que estás construyendo una plataforma de e-commerce y tienes un listado de productos almacenados internamente en un árbol binario complejo para optimizar las búsquedas rápidas. En otra parte del sistema, tienes un listado de promociones guardado en una simple matriz asociativa (array).
+    </p>
+    <p>
+        <strong>¿Qué duele aquí?</strong> Si el cliente (por ejemplo, el generador de facturas o la vista del carrito) necesita recorrer ambos listados para calcular un total, estás obligado a exponer la estructura interna de tus colecciones. El código cliente se llena de bucles <code>for</code>, <code>foreach</code> recursivos para el árbol, y lógicas pesadas que cambian drásticamente según cómo guardes los datos. Si mañana decides cambiar el árbol binario por una lista enlazada, romperás todo el código cliente que dependía de esa estructura.
+    </p>
+    
+    <h3>La Solución</h3>
+    <p>
+        El patrón extrae el comportamiento de recorrido de la colección y lo delega a un objeto independiente llamado <strong>Iterator</strong>. Este objeto encapsula todos los detalles del recorrido (como la posición actual y cuántos elementos quedan), exponiendo una interfaz unificada y ultra simple. El cliente ya no necesita saber si recorre un árbol, una base de datos o un array; solo le pide al iterador el "siguiente" elemento.
+    </p>
+
+    <h4>Diagrama de Clases</h4>
+    
+    <pre style="background: #1e293b; color: #f8fafc; padding: 16px; border-radius: 8px; font-family: monospace; overflow-x: auto;">
++------------------+                   +--------------------+
+|    Aggregate     |------------------&gt;|      Iterator      |
++------------------+                   +--------------------+
+| + createIterator()|                  | + current()        |
++------------------+                   | + next()           |
+         ^                             | + hasNext()        |
+         |                             +--------------------+
++------------------+                             ^
+|ConcreteAggregate |                             |
++------------------+                   +--------------------+
+| - items: array   |                   |  ConcreteIterator  |
+| + createIterator()|-----------------&gt;|--------------------|
++------------------+                   | - position: int    |
+                                       +--------------------+
+    </pre>
+
+    <h4>Estructura de Componentes</h4>
+    <ul>
+        <li><strong>Iterator:</strong> Define las operaciones necesarias para recorrer la colección (obtener el elemento actual, avanzar al siguiente, verificar si hay más).</li>
+        <li><strong>ConcreteIterator:</strong> Implementa el recorrido específico para una estructura de datos concreta y mantiene el estado de la iteración actual.</li>
+        <li><strong>Aggregate (Iterable):</strong> Define una interfaz para crear y retornar su iterador correspondiente.</li>
+        <li><strong>ConcreteAggregate:</strong> Mantiene la colección de datos real y expone el método para fabricar el iterador configurado para su estructura.</li>
+    </ul>
+
+    <h4>Ejemplo de Código (PHP)</h4>
+    <p>Estructura mínima que demuestra cómo desacoplar el recorrido de una colección personalizada:</p>
+    <pre style="background: #1e293b; color: #f8fafc; padding: 16px; border-radius: 8px; font-family: monospace; overflow-x: auto;">
+&lt;?php
+// 1. La interfaz del Iterador
+interface MyIterator {
+    public function current();
+    public function next(): void;
+    public function hasNext(): bool;
+}
+
+// 2. El Iterador Concreto
+class ArrayIterator implements MyIterator {
+    private int $position = 0;
+    public function __construct(private array $items) {}
+
+    public function current() { return $this->items[$this->position]; }
+    public function next(): void { $this->position++; }
+    public function hasNext(): bool { return isset($this->items[$this->position]); }
+}
+
+// 3. La Colección que expone el Iterador
+class ProductCollection {
+    private array $products = [];
+    public function addProduct(string $product): void { $this->products[] = $product; }
+    public function getIterator(): MyIterator { return new ArrayIterator($this->products); }
+}
+
+// 4. Uso por el cliente (completamente desacoplado de la estructura interna)
+$collection = new ProductCollection();
+$collection->addProduct("Laptop");
+$collection->addProduct("Mouse");
+
+$iterator = $collection->getIterator();
+while ($iterator->hasNext()) {
+    echo $iterator->current() . "\n";
+    $iterator->next();
+}
+    </pre>
+
+    <h3>Señales de cuando SÍ aplica:</h3>
+    <ul>
+        <li><strong>Colecciones complejas bajo el capó:</strong> Cuando tu estructura de datos es compleja (como árboles, grafos o respuestas paginadas de una API) y quieres ocultar esa complejidad al cliente.</li>
+        <li><strong>Múltiples formas de recorrido:</strong> Cuando necesitas recorrer la misma estructura de diferentes maneras (por ejemplo, recorrer un árbol de forma pre-orden, in-orden o post-orden) sin duplicar lógica en el cliente.</li>
+        <li><strong>Polimorfismo en recorridos:</strong> Cuando quieres que tu código sea capaz de iterar sobre diferentes tipos de colecciones de manera uniforme sin importar cuál sea.</li>
+    </ul>
+
+    <h3>Señales de cuando NO aplica (Sobre-ingeniería):</h3>
+    <ul>
+        <li><strong>Colecciones lineales simples:</strong> Si tu aplicación solo maneja listas simples o arrays planos de PHP y el lenguaje ya provee un bucle nativo estructurado (como un simple <code>foreach</code>).</li>
+        <li><strong>Acceso puramente aleatorio:</strong> Si tu lógica requiere saltar constantemente de forma aleatoria a posiciones específicas (como acceder directamente al índice 15, luego al 2) en lugar de un recorrido secuencial.</li>
+        <li><strong>Restricciones severas de rendimiento:</strong> En sistemas embebidos o procesos críticos donde instanciar un objeto iterador intermedio añada una sobrecarga de memoria innecesaria.</li>
+    </ul>
+
+    <h3>Ejemplo Real en la Industria</h3>
+    <p>
+        Este patrón es tan fundamental que la mayoría de lenguajes modernos lo traen integrado en su núcleo. En el ecosistema de PHP, contamos con la interfaz nativa <code>Iterator</code> y <code>IteratorAggregate</code>.
+    </p>
+    <p>
+        Un ejemplo real y verificable se encuentra en las <strong>Lazy Collections de Laravel</strong> (implementadas mediante <code>Illuminate\Support\LazyCollection</code>). Cuando procesas millones de registros de una base de datos utilizando el ORM Eloquent, cargarlos todos en memoria saturaría el servidor. 
+    </p>
+    <p>
+        Laravel soluciona esto implementando <code>IteratorAggregate</code> apoyado por generadores de PHP (usando <code>yield</code>). Esto permite recorrer gigabytes de registros de la base de datos secuencialmente usando un simple bucle <code>foreach</code>, manteniendo en memoria únicamente un solo registro a la vez:
+    </p>
+    <pre style="background: #1e293b; color: #f8fafc; padding: 16px; border-radius: 8px; font-family: monospace; overflow-x: auto;">
+use App\Models\User;
+
+// Laravel crea un iterador bajo el capó mediante cursores de base de datos
+$users = User::cursor(); 
+
+// El cliente itera millones de filas de forma segura, sin colapsar la RAM
+foreach ($users as $user) {
+    echo $user->email;
+}
+    </pre>
+</body>
+</html>
