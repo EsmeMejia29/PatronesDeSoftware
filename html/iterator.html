@@ -38,7 +38,7 @@
 
             <div class="quote-box">
                 <p class="interactive-quote">
-                    "Permite acceder secuencialmente a los elementos de un objeto agregado sin exponer su representación subyacente."
+                    "Iterator es un patrón de diseño de comportamiento que permite recorrer elementos de una colección sin exponer su representación subyacente."
                 </p>
             </div>
 
@@ -53,7 +53,7 @@
 
         <div class="cinema-panel" id="panel-1">
             <span class="panel-indicator">CHAPTER 01</span>
-            <h3 class="panel-title">1. El Problema (¿Qué duele antes del patrón?)</h3>
+            <h3 class="panel-title">1. El Problema</h3>
             <p>
                 Imagina que estás construyendo el backend de una plataforma de e-commerce en El Salvador. Para optimizar las búsquedas rápidas, almacenas el listado de productos internamente en una estructura de <strong>Árbol Binario</strong> compleja. Al mismo tiempo, el módulo de promociones guarda sus datos en una matriz asociativa simple (un <strong>Array</strong> plano).
             </p>
@@ -173,10 +173,10 @@ while ($iterator->hasNext()) {
                 Un ejemplo real, robusto y de alto impacto en producción ocurre en las <strong>Lazy Collections de Laravel</strong> (implementadas bajo el componente <code>Illuminate\Support\LazyCollection</code>).
             </p>
             <p>
-                Cuando ejecutas consultas pesadas a través del ORM Eloquent, intentar cargar un millón de registros a la vez colapsaría la memoria. Laravel lo soluciona implementando el patrón Iterator apoyado por generadores (utilizando la palabra clave <code>yield</code>).
+                Cuando se ejecutan consultas pesadas a través del ORM Eloquent, intentar cargar un millón de registros a la vez colapsaría la memoria. Laravel lo soluciona implementando el patrón Iterator apoyado por generadores (utilizando la palabra clave <code>yield</code>).
             </p>
             <p>
-                Esto permite que utilices un bucle estándar en tu controlador, pero manteniendo bajo el capó **un único registro en memoria a la vez**:
+                Esto permite que se utilice un bucle estándar en el controlador, pero manteniendo bajo el capó **un único registro en memoria a la vez**:
             </p>
 
             <pre style="color: #f8fafc; font-family: monospace; overflow-x: auto; margin-top: 15px;">
@@ -213,7 +213,6 @@ foreach ($users as $user) {
         const modal = document.getElementById('videoModal');
         const iframe = document.getElementById('modalVideoFrame');
 
-        // Reseteo inicial forzado por código
         if (modal) {
             modal.style.setProperty('display', 'none', 'important');
             modal.style.setProperty('opacity', '0', 'important');
@@ -228,13 +227,11 @@ foreach ($users as $user) {
                 
                 if (modal && iframe) {
                     iframe.src = videoUrl;
-                    
-                    // Forzado secuencial directo al motor gráfico del navegador
                     modal.style.setProperty('display', 'flex', 'important');
                     modal.style.setProperty('visibility', 'visible', 'important');
                     modal.style.setProperty('opacity', '1', 'important');
                     
-                    // Bloqueamos el scroll de la página trasera para garantizar el foco
+                    // Se bloque el scroll del body para que el usuario no pueda desplazarse mientras el modal está abierto
                     document.body.style.overflow = 'hidden';
                 }
             });
