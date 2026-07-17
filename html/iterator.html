@@ -5,50 +5,403 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patrón Iterator - Documentación Académica</title>
     <link rel="stylesheet" href="../css/patrones.css">
+    <style>
+        body { 
+            overflow-x: hidden; 
+            background-color: #0b0f19;
+            color: #f8fafc;
+            perspective: 1200px;
+            margin: 0 auto !important;
+            padding: 0 !important;
+            max-width: 100% !important;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100vw;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            width: 100%;
+            transform-origin: left;
+            transform: scaleX(0);
+            background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+            z-index: 1000;
+        }
+
+        #ambient-bg {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.25;
+            will-change: transform;
+        }
+        .blob-1 { width: 450px; height: 450px; background: #4f46e5; top: 10%; left: -100px; }
+        .blob-2 { width: 350px; height: 350px; background: #c084fc; top: 60%; right: -100px; }
+
+        .cinema-viewport {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto !important;
+            padding: 0 24px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cinema-panel {
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            margin: 50px 0;
+            padding: 50px;
+            background: rgba(15, 23, 42, 0.45);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            transform-style: preserve-3d;
+            will-change: transform, opacity;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .hero-panel {
+            min-height: auto;
+            background: transparent;
+            border: none;
+            backdrop-filter: none;
+            box-shadow: none;
+            padding: 140px 0 40px 0;
+            width: 100%;
+        }
+
+        .hero-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        .parallax-title {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1.1;
+            text-transform: uppercase;
+            letter-spacing: -1.5px;
+            background: linear-gradient(135deg, #fff 30%, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            width: 100%;
+            text-align: center;
+            border: none !important;
+            padding: 0 !important;
+        }
+
+        .parallax-subtitle {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #818cf8;
+            margin: 15px 0 0 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        .quote-box {
+            margin: 40px 0 30px 0;
+            padding: 30px;
+            background: rgba(99, 102, 241, 0.08);
+            border-left: 4px solid #6366f1;
+            border-radius: 0 12px 12px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .interactive-quote {
+            font-size: 1.35rem;
+            line-height: 1.6;
+            font-style: italic;
+            color: #cbd5e1;
+            margin: 0;
+        }
+
+        .panel-indicator {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.2);
+            font-family: monospace;
+            letter-spacing: 2px;
+        }
+
+        .panel-title {
+            font-size: 2rem;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .video-btn-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            padding: 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 30px 0;
+            width: 100%;
+            box-sizing: border-box;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .video-thumbnail-wrapper {
+            position: relative;
+            width: 140px;
+            height: 80px;
+            background: #070a13;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .video-thumbnail-wrapper::before {
+            content: "▶";
+            font-size: 1.5rem;
+            color: #fff;
+            z-index: 2;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .video-thumbnail-wrapper:hover::before {
+            transform: scale(1.2);
+            color: #c084fc;
+        }
+
+        .video-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(7, 10, 19, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .video-modal.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .video-container-box {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .video-container-box iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-modal-btn:hover {
+            color: #fff;
+        }
+
+        pre {
+            position: relative;
+            overflow: hidden;
+            --mx: 50%;
+            --my: 50%;
+            transform-style: preserve-3d;
+            perspective: 800px;
+            will-change: transform;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: #070a13;
+            border-radius: 12px;
+            padding: 24px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        pre::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(250px circle at var(--mx) var(--my), rgba(168, 85, 247, 0.15), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        pre:hover::before { opacity: 1; }
+
+        .cinema-timeline {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 100;
+        }
+        .timeline-dot {
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .timeline-dot.active {
+            background: #a855f7;
+            transform: scale(1.6);
+            box-shadow: 0 0 10px #a855f7;
+        }
+
+        @media (max-width: 768px) {
+            .parallax-title { font-size: 2.2rem; }
+            .parallax-subtitle { font-size: 1.5rem; }
+            .cinema-panel { padding: 25px; margin: 25px 0; }
+            .cinema-viewport { padding: 0 20px; }
+            .cinema-timeline { right: 15px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .cinema-panel { transform: none !important; opacity: 1 !important; }
+        }
+    </style>
 </head>
 <body>
 
-    <p style="margin-top: 20px;"><a href="../index.html" style="text-decoration: none; font-weight: bold;">Volver al Inicio</a></p>
-
-    <h1>Patrones de Diseño de Software</h1>
-    <h2>Patrón de Diseño: Iterator</h2>
-
-    <div style="background: rgba(79, 70, 229, 0.1); border-left: 4px solid #4f46e5; padding: 16px; margin: 20px 0; border-radius: 4px;">
-        <strong>📺 Video Explicativo del Grupo (3-5 min):</strong> 
-        <a href="link" target="_blank" style="font-weight: bold; margin-left: 5px;">Ver video en YouTube / OneDrive</a>
+    <div id="ambient-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
     </div>
 
-    <p class="lead" style="font-size: 1.2rem; font-style: italic; color: #475569;">
-        "Permite acceder secuencialmente a los elementos de un objeto agregado sin exponer su representación subyacente."
-    </p>
+    <div id="scroll-progress"></div>
 
-    <hr>
+    <div class="cinema-timeline">
+        <div class="timeline-dot active" data-index="0"></div>
+        <div class="timeline-dot" data-index="1"></div>
+        <div class="timeline-dot" data-index="2"></div>
+        <div class="timeline-dot" data-index="3"></div>
+        <div class="timeline-dot" data-index="4"></div>
+        <div class="timeline-dot" data-index="5"></div>
+    </div>
 
-    <h3>1. El Problema (¿Qué duele antes del patrón?)</h3>
-    <p>
-        Imagina que estás construyendo el backend de una plataforma de e-commerce en El Salvador. Para optimizar las búsquedas rápidas, almacenas el listado de productos internamente en una estructura de <strong>Árbol Binario</strong> compleja. Al mismo tiempo, el módulo de promociones guarda sus datos en una matriz asociativa simple (un <strong>Array</strong> plano).
-    </p>
-    <p>
-        <strong>¿Dónde está el dolor real?</strong> Si el componente de facturación o la vista del carrito necesitan recorrer ambas colecciones para calcular un gran total, obligas al código cliente a llenarse de bucles <code>foreach</code> tradicionales para el array, combinados con lógicas recursivas pesadas para poder caminar a través del árbol. 
-    </p>
-    <p>
-        El cliente termina conociendo íntimamente <em>cómo</em> están guardados tus datos. Si el día de mañana decides cambiar el árbol binario por una lista enlazada para mejorar el uso de memoria, **romperás inmediatamente todo el código cliente** del sistema que dependía de esa estructura.
-    </p>
+    <div class="video-modal" id="videoModal">
+        <div class="video-container-box">
+            <button class="close-modal-btn" id="closeModal">✕ CERRAR PANTALLA</button>
+            <iframe id="modalVideoFrame" src="" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
+        </div>
+    </div>
 
-    <h3>2. La Solución (Cómo lo resuelve y Diagrama)</h3>
-    <p>
-        El patrón Iterator extrae la responsabilidad del recorrido de la colección y se la delega a un objeto independiente llamado <strong>Iterador</strong>. Este objeto encapsula de forma absoluta el estado de la iteración (en qué posición va, cuántos elementos quedan) y expone una interfaz pública unificada. 
-    </p>
-    <p>
-        Gracias a esto, al cliente ya no le importa si los productos provienen de un árbol, un array o una base de datos; simplemente interactúa con el iterador pidiéndole el "siguiente" elemento de manera uniforme.
-    </p>
+    <div class="cinema-viewport">
+        
+        <p style="margin-top: 40px; margin-bottom: 0; width: 100%; text-align: left;">
+            <a href="../index.html" style="text-decoration: none; font-weight: bold; color: #818cf8; font-size: 0.95rem;">← Volver al Inicio</a>
+        </p>
 
-    <h4>Diagrama de Clases (Estructura y Relaciones)</h4>
-    <pre style="background: #1e293b; color: #f8fafc; padding: 16px; border-radius: 8px; font-family: monospace; overflow-x: auto; font-size: 0.9rem; line-height: 1.2;">
+        <div class="cinema-panel hero-panel" id="panel-0">
+            <header class="hero-container">
+                <h1 class="parallax-title" id="p-title">Patrones de Diseño</h1>
+                <h2 class="parallax-subtitle" id="p-subtitle">Iterator Pattern</h2>
+            </header>
+
+            <div class="quote-box">
+                <p class="interactive-quote">
+                    "Permite acceder secuencialmente a los elementos de un objeto agregado sin exponer su representación subyacente."
+                </p>
+            </div>
+
+            <div class="video-btn-card">
+                <div>
+                    <span style="display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #a5b4fc; margin-bottom: 4px; text-align: left;">Recurso Audiovisual</span>
+                    <strong style="color: #fff; font-size: 1rem;">📺 Video Explicativo del Grupo (3-5 min)</strong>
+                </div>
+                <div class="video-thumbnail-wrapper" id="openVideoBtn"></div>
+            </div>
+        </div>
+
+        <div class="cinema-panel" id="panel-1">
+            <span class="panel-indicator">CHAPTER 01</span>
+            <h3 class="panel-title">1. El Problema (¿Qué duele antes del patrón?)</h3>
+            <p>
+                Imagina que estás construyendo el backend de una plataforma de e-commerce en El Salvador. Para optimizar las búsquedas rápidas, almacenas el listado de productos internamente en una estructura de <strong>Árbol Binario</strong> compleja. Al mismo tiempo, el módulo de promociones guarda sus datos en una matriz asociativa simple (un <strong>Array</strong> plano).
+            </p>
+            <p>
+                <strong>¿Dónde está el dolor real?</strong> Si el componente de facturación o la vista del carrito necesitan recorrer ambas colecciones para calcular un gran total, obligas al código cliente a llenarse de bucles <code>foreach</code> tradicionales para el array, combinados con lógicas recursivas pesadas para poder caminar a través del árbol. 
+            </p>
+            <p>
+                El cliente termina conociendo íntimamente <em>cómo</em> están guardados tus datos. Si el día de mañana decides cambiar el árbol binario por una lista enlazada para mejorar el uso de memoria, **romperás inmediatamente todo el código cliente** del sistema que dependía de esa estructura.
+            </p>
+        </div>
+
+        <div class="cinema-panel" id="panel-2">
+            <span class="panel-indicator">CHAPTER 02</span>
+            <h3 class="panel-title">2. La Solución (Cómo lo resuelve y Diagrama)</h3>
+            <p>
+                El patrón Iterator extrae la responsabilidad del recorrido de la colección y se la delega a un objeto independiente llamado <strong>Iterador</strong>. Este objeto encapsula de forma absoluta el estado de la iteración (en qué posición va, cuántos elementos quedan) y expone una interfaz pública unificada.
+            </p>
+            <p>
+                Gracias a esto, al cliente ya no le importa si los productos provienen de un árbol, un array o una base de datos; simplemente interactúa con el iterador pidiéndole el "siguiente" elemento de manera uniforme.
+            </p>
+
+            <h4 style="margin-top: 30px; margin-bottom: 15px; color: #818cf8;">Diagrama de Clases</h4>
+            <pre style="color: #f8fafc; font-family: monospace; overflow-x: auto; font-size: 0.85rem; line-height: 1.3;">
 +------------------+                   +--------------------+
-|    Aggregate     |------------------&gt;|      Iterator      |
+|    Aggregate     |------------------>|      Iterator      |
 +------------------+                   +--------------------+
-| + createIterator()|                  | + current()        |
+| + createIterator()|                   | + current()        |
 +------------------+                   | + next()           |
          ^                             | + hasNext()        |
          |                             +--------------------+
@@ -56,32 +409,33 @@
 |ConcreteAggregate |                             |
 +------------------+                   +--------------------+
 | - items: array   |                   |  ConcreteIterator  |
-| + createIterator()|-----------------&gt;|--------------------|
+| + createIterator()|----------------->|--------------------|
 +------------------+                   | - position: int    |
                                        +--------------------+
-    </pre>
+            </pre>
 
-    <h4>Estructura de Componentes</h4>
-    <ul>
-        <li><strong>Iterator:</strong> Define el contrato o interfaz para acceder y recorrer los elementos (métodos clave: avanzar, obtener el actual, validar el final).</li>
-        <li><strong>ConcreteIterator:</strong> Implementa el algoritmo de recorrido específico para la estructura interna correspondiente y mantiene el puntero o posición de la iteración.</li>
-        <li><strong>Aggregate (Iterable):</strong> Interfaz que define que la colección es capaz de producir o "fabricar" iteradores compatibles.</li>
-        <li><strong>ConcreteAggregate:</strong> Mantiene la colección real de datos y devuelve una instancia del <code>ConcreteIterator</code> configurado exactamente para su estructura.</li>
-    </ul>
+            <h4 style="margin-top: 30px; margin-bottom: 15px; color: #818cf8;">Estructura de Componentes</h4>
+            <ul style="line-height: 1.7; padding-left: 20px;">
+                <li><strong>Iterator:</strong> Define el contrato o interfaz para acceder y recorrer los elementos.</li>
+                <li><strong>ConcreteIterator:</strong> Implementa el algoritmo de recorrido específico.</li>
+                <li><strong>Aggregate (Iterable):</strong> Interfaz para producir iteradores compatibles.</li>
+                <li><strong>ConcreteAggregate:</strong> Mantiene la colección real y fabrica su iterador.</li>
+            </ul>
+        </div>
 
-    <h3>3. Código Mínimo (Estructura Esencial en PHP)</h3>
-    <p>Esqueleto funcional de unas 25 líneas de lógica que demuestra cómo desacoplar por completo el recorrido del cliente:</p>
-    
-    <pre style="background: #1e293b; color: #f8fafc; padding: 16px; border-radius: 8px; font-family: monospace; overflow-x: auto;">
+        <div class="cinema-panel" id="panel-3">
+            <span class="panel-indicator">CHAPTER 03</span>
+            <h3 class="panel-title">3. Código Mínimo (Estructura Esencial en PHP)</h3>
+            <p style="margin-bottom: 15px;">Esqueleto funcional que demuestra cómo desacoplar por completo el recorrido del cliente:</p>
+            
+            <pre style="color: #f8fafc; font-family: monospace; overflow-x: auto;">
 &lt;?php
-// 1. Interfaz común del Iterador
 interface MyIterator {
     public function current();
     public function next(): void;
     public function hasNext(): bool;
 }
 
-// 2. Iterador Concreto para Arrays
 class ArrayIterator implements MyIterator {
     private int $position = 0;
     public function __construct(private array $items) {}
@@ -91,14 +445,12 @@ class ArrayIterator implements MyIterator {
     public function hasNext(): bool { return isset($this->items[$this->position]); }
 }
 
-// 3. Agregado Concreto (La Colección)
 class ProductCollection {
     private array $products = [];
     public function addProduct(string $product): void { $this->products[] = $product; }
     public function getIterator(): MyIterator { return new ArrayIterator($this->products); }
 }
 
-// 4. Código Cliente: Totalmente agnóstico de la estructura interna
 $collection = new ProductCollection();
 $collection->addProduct("Laptop");
 $collection->addProduct("Mouse");
@@ -108,49 +460,236 @@ while ($iterator->hasNext()) {
     echo "Producto: " . $iterator->current() . "\n";
     $iterator->next();
 }
-    </pre>
+            </pre>
+        </div>
 
-    <h3>4. Cuándo SÍ / Cuándo NO (Criterio de Aplicación)</h3>
-    
-    <h4>Señales de cuando SÍ aplica:</h4>
-    <ul>
-        <li><strong>Colecciones complejas bajo el capó:</strong> Cuando tu estructura de datos es compleja (como grafos, árboles jerárquicos o respuestas paginadas de una API) y quieres simplificarle la vida al desarrollador cliente.</li>
-        <li><strong>Múltiples formas de recorrido independientes:</strong> Cuando necesitas poder recorrer una misma estructura de diferentes formas (ej. recorrer un árbol en pre-orden o post-orden) sin duplicar condicionales en el cliente.</li>
-        <li><strong>Polimorfismo en recorridos unificados:</strong> Cuando deseas que el sistema itere sobre diferentes colecciones de datos usando una misma firma estándar.</li>
-    </ul>
+        <div class="cinema-panel" id="panel-4">
+            <span class="panel-indicator">CHAPTER 04</span>
+            <h3 class="panel-title">4. Cuándo SÍ / Cuándo NO</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 10px;">
+                <div>
+                    <h4 style="color: #10b981; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">✔️ Cuándo SÍ</h4>
+                    <ul style="line-height: 1.6; padding-left: 15px; font-size: 0.9rem; margin: 0;">
+                        <li>Colecciones complejas como grafos o árboles jerárquicos.</li>
+                        <li>Diferentes recorridos alternativos sobre una misma estructura.</li>
+                        <li>Polimorfismo unificado en lecturas de colecciones.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #f43f5e; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">❌ Cuándo NO</h4>
+                    <ul style="line-height: 1.6; padding-left: 15px; font-size: 0.9rem; margin: 0;">
+                        <li>Colecciones lineales simples donde un bucle nativo basta.</li>
+                        <li>Acceso puramente aleatorio e indexado.</li>
+                        <li>Restricciones extremas de memoria/rendimiento de hardware.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-    <h4>Señales de cuando NO aplica (Sobre-ingeniería):</h4>
-    <ul>
-        <li><strong>Colecciones lineales simples:</strong> Si tu aplicación solo maneja listas estándar o arrays planos de PHP y el lenguaje ya provee un bucle nativo óptimo y rápido (como un <code>foreach</code> estándar).</li>
-        <li><strong>Acceso puramente aleatorio e indexado:</strong> Si la lógica de tu negocio requiere saltar directamente a índices aleatorios (ej. ir directo al índice 42 y luego al 4) en lugar de realizar una lectura secuencial línea por línea.</li>
-        <li><strong>Restricciones severas de memoria/rendimiento:</strong> En sistemas embebidos de hardware limitado donde instanciar objetos intermedios por cada iteración agregue una sobrecarga crítica a la memoria RAM.</li>
-    </ul>
+        <div class="cinema-panel" id="panel-5">
+            <span class="panel-indicator">CHAPTER 05</span>
+            <h3 class="panel-title">5. Un Ejemplo Real en la Industry</h3>
+            <p>
+                Un ejemplo real, robusto y de alto impacto en producción ocurre en las <strong>Lazy Collections de Laravel</strong> (implementadas bajo el componente <code>Illuminate\Support\LazyCollection</code>).
+            </p>
+            <p>
+                Cuando ejecutas consultas pesadas a través del ORM Eloquent, intentar cargar un millón de registros a la vez colapsaría la memoria. Laravel lo soluciona implementando el patrón Iterator apoyado por generadores (utilizando la palabra clave <code>yield</code>).
+            </p>
+            <p>
+                Esto permite que utilices un bucle estándar en tu controlador, pero manteniendo bajo el capó **un único registro en memoria a la vez**:
+            </p>
 
-    <h3>5. Un Ejemplo Real en la Industria (Verificable)</h3>
-    <p>
-        Este patrón es tan poderoso que viene construido de manera nativa en el núcleo de los lenguajes modernos mediante interfaces como <code>Iterator</code> o <code>IteratorAggregate</code> de PHP.
-    </p>
-    <p>
-        Un ejemplo real, robusto y de alto impacto en producción ocurre en las <strong>Lazy Collections de Laravel</strong> (implementadas bajo el componente <code>Illuminate\Support\LazyCollection</code>).
-    </p>
-    <p>
-        Cuando ejecutas consultas pesadas a través del ORM Eloquent, intentar cargar un millón de registros a la vez en un array colapsaría la memoria del servidor. Laravel lo soluciona implementando el patrón Iterator apoyado por generadores (utilizando la palabra clave <code>yield</code>). 
-    </p>
-    <p>
-        Esto permite que utilices un bucle estándar en tu controlador, pero manteniendo bajo el capó **un único registro en memoria a la vez** mientras se recorren millones de filas de la base de datos de manera fluida y segura:
-    </p>
-
-    <pre style="background: #1e293b; color: #f8fafc; padding: 16px; border-radius: 8px; font-family: monospace; overflow-x: auto;">
+            <pre style="color: #f8fafc; font-family: monospace; overflow-x: auto; margin-top: 15px;">
 use App\Models\User;
 
-// Laravel genera un iterador transparente apoyado en cursores de la base de datos
 $users = User::cursor(); 
 
-// El código cliente itera de forma secuencial y ultra limpia
 foreach ($users as $user) {
-    echo $user->email; // Mantiene el consumo de RAM plano en el servidor
+    echo $user->email; 
 }
-    </pre>
+            </pre>
+        </div>
 
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13/dist/ScrollToPlugin.min.js"></script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
+        const videoUrl = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"; 
+        const modal = document.getElementById('videoModal');
+        const iframe = document.getElementById('modalVideoFrame');
+
+        document.getElementById('openVideoBtn').addEventListener('click', () => {
+            iframe.src = videoUrl;
+            modal.classList.add('open');
+        });
+
+        document.getElementById('closeModal').addEventListener('click', () => {
+            modal.classList.remove('open');
+            iframe.src = "";
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('open');
+                iframe.src = "";
+            }
+        });
+
+        if (!reducedMotion) {
+
+            gsap.to('#scroll-progress', {
+                scaleX: 1,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: document.body,
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: 0.1
+                }
+            });
+
+            gsap.to('#p-title', {
+                xPercent: -8,
+                opacity: 0.85,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '#panel-0',
+                    start: 'top top',
+                    end: '+=100px',
+                    scrub: true
+                }
+            });
+
+            gsap.to('#p-subtitle', {
+                xPercent: 8,
+                opacity: 0.85,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '#panel-0',
+                    start: 'top top',
+                    end: '+=100px',
+                    scrub: true
+                }
+            });
+
+            gsap.to('.blob-1', {
+                yPercent: 35,
+                xPercent: 15,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: document.body,
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: 1
+                }
+            });
+
+            gsap.to('.blob-2', {
+                yPercent: -35,
+                xPercent: -15,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: document.body,
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: 1
+                }
+            });
+
+            document.querySelectorAll('.cinema-panel').forEach((panel, i) => {
+                if (i === 0) return;
+
+                gsap.fromTo(panel, 
+                    { 
+                        opacity: 0, 
+                        rotationX: -20, 
+                        scale: 0.9,
+                        z: -150,
+                        transformOrigin: 'bottom center',
+                        y: 80
+                    },
+                    {
+                        opacity: 1,
+                        rotationX: 0,
+                        scale: 1,
+                        z: 0,
+                        y: 0,
+                        duration: 1,
+                        ease: 'power2.out',
+                        scrollTrigger: {
+                            trigger: panel,
+                            start: 'top 88%',
+                            end: 'top 45%',
+                            scrub: 1,
+                            onEnter: () => updateTimeline(i),
+                            onEnterBack: () => updateTimeline(i)
+                        }
+                    }
+                );
+            });
+
+            function updateTimeline(index) {
+                document.querySelectorAll('.timeline-dot').forEach((dot, idx) => {
+                    if (idx === index) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            }
+
+            document.querySelectorAll('.timeline-dot').forEach((dot) => {
+                dot.addEventListener('click', () => {
+                    const index = dot.getAttribute('data-index');
+                    const targetPanel = document.querySelector(`#panel-${index}`);
+                    gsap.to(window, {
+                        scrollTo: { y: targetPanel, offsetY: 40 },
+                        duration: 1.2,
+                        ease: 'power3.inOut'
+                    });
+                });
+            });
+
+            if (!isTouch) {
+                document.querySelectorAll('pre, .cinema-panel:not(.hero-panel)').forEach((block) => {
+                    const rotateX = gsap.quickTo(block, 'rotateX', { duration: 0.4, ease: 'power3.out' });
+                    const rotateY = gsap.quickTo(block, 'rotateY', { duration: 0.4, ease: 'power3.out' });
+
+                    block.addEventListener('mousemove', (e) => {
+                        const rect = block.getBoundingClientRect();
+                        const px = e.clientX - rect.left;
+                        const py = e.clientY - rect.top;
+
+                        if (block.tagName === 'PRE') {
+                            block.style.setProperty('--mx', `${px}px`);
+                            block.style.setProperty('--my', `${py}px`);
+                        }
+
+                        const relX = (px / rect.width) - 0.5;
+                        const relY = (py / rect.height) - 0.5;
+                        rotateY(relX * 6);
+                        rotateX(relY * -6);
+                    });
+
+                    block.addEventListener('mouseenter', () => {
+                        gsap.to(block, { scale: 1.01, duration: 0.3, ease: 'power2.out' });
+                    });
+
+                    block.addEventListener('mouseleave', () => {
+                        gsap.to(block, { scale: 1, rotateX: 0, rotateY: 0, duration: 0.5, ease: 'power3.out' });
+                    });
+                });
+            }
+        }
+    </script>
 </body>
 </html>
