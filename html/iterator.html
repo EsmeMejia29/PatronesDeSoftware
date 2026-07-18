@@ -94,7 +94,8 @@
                 completo si los datos provienen de un array, un árbol binario o cualquier otra estructura compleja.
             </p>
 
-            <h4 style="margin-top: 30px; margin-bottom: 15px; color: #818cf8;">Diagrama de la arquitectura del software</h4>
+            <h4 style="margin-top: 30px; margin-bottom: 15px; color: #818cf8;">Diagrama de la arquitectura del software
+            </h4>
             <pre
                 style="color: #f8fafc; font-family: monospace; overflow-x: auto; font-size: 0.82rem; line-height: 1.4;">
 +---------------------+                      crea                     +-----------------------+
@@ -124,7 +125,8 @@
                 <li><strong>Aggregate (Interfaz):</strong> Define el contrato obligatorio para producir iteradores
                     (<code>getIterator</code>).</li>
                 <li><strong>Iterator (Interfaz):</strong> Define el contrato estándar para recorrer la colección:
-                    <code>current()</code>, <code>next()</code> y <code>hasNext()</code>.</li>
+                    <code>current()</code>, <code>next()</code> y <code>hasNext()</code>.
+                </li>
                 <li><strong>ConcreteAggregate (ProductCollection):</strong> Mantiene la colección real de datos y
                     fábrica su iterador específico.</li>
                 <li><strong>ConcreteIterator (ArrayIterator):</strong> Implementa el algoritmo de recorrido concreto y
@@ -137,7 +139,8 @@
             <h3 class="panel-title">3. Código Mínimo en TypeScript</h3>
             <p style="margin-bottom: 15px;">A continuación se presenta el esqueleto en código aplicado a una
                 <strong>Playlist musical</strong>, mostrando cómo el cliente recorre las canciones sin conocer el
-                arreglo interno:</p>
+                arreglo interno:
+            </p>
 
             <pre style="color: #f8fafc; font-family: monospace; overflow-x: auto; font-size: 0.9rem; line-height: 1.5;">
 type Cancion = { titulo: string; artista: string };
@@ -247,7 +250,8 @@ while (iterador.hasNext()) {
             <span class="panel-indicator">CHAPTER 05</span>
             <h3 class="panel-title">5. Un Ejemplo Real en la Industria</h3>
             <p>
-                Quiza  lo has usado sin saberlo en el desarrollo de backend: las <strong>Lazy Collections de Laravel</strong> (bajo la
+                Quiza lo has usado sin saberlo en el desarrollo de backend: las <strong>Lazy Collections de
+                    Laravel</strong> (bajo la
                 clase <code>Illuminate\Support\LazyCollection</code>).
             </p>
             <p>
