@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entrega de Patrones de Diseño de Software</title>
-    <link rel="stylesheet" href="./css/main.css"> 
+    <link rel="stylesheet" href="./css/main.css">
 </head>
+
 <body>
 
     <div id="ambient-bg">
@@ -20,19 +22,22 @@
         <div class="cinema-panel hero-panel" id="panel-0">
             <header class="hero-container">
                 <h1 class="parallax-title" id="p-title">Patrones de Diseño</h1>
-                <p class="parallax-subtitle" id="p-subtitle">Bienvenidos a nuestro mini-sitio web donde documentamos y explicamos el patrón de diseño asignado para este proyecto de la materia :).</p>
+                <p class="parallax-subtitle" id="p-subtitle">Bienvenidos a nuestro mini-sitio web donde documentamos y
+                    explicamos el patrón de diseño asignado para este proyecto.</p>
             </header>
         </div>
 
         <div class="cinema-panel" id="panel-1">
-            <h2 class="panel-title">Patrón asignado</h2>
-            <p style="margin-bottom: 25px;">Selecciona el patrón para ver su documentation detallada, estructura, ejemplos de código y video explicativo:</p>
-            
+            <h2 class="panel-title">Patrón Asignado</h2>
+            <p style="margin-bottom: 25px;">Selecciona el patrón para ver su documentación detallada, estructura,
+                ejemplos de código y video explicativo:</p>
+
             <div class="patrones-container">
                 <a href="./html/iterator.html" class="card-link">
                     <div>
                         <h3>Patrón Iterator</h3>
-                        <p>Accede secuencialmente a los elementos de un objeto agregado sin exponer su representación interna.</p>
+                        <p>Recorre colecciones sin conocer su estructura interna. Permite acceder secuencialmente a los
+                            elementos sin exponer su representación subyacente.</p>
                     </div>
                     <span class="btn-leer">Ver patrón -></span>
                 </a>
@@ -41,7 +46,8 @@
 
         <div class="cinema-panel" id="panel-2">
             <h2 class="panel-title">Registro de Aportes</h2>
-            <p>A continuación se detalla la contribución y participación concreta de cada integrante del grupo en el desarrollo del proyecto:</p>
+            <p>A continuación se detalla la contribución y participación concreta de cada integrante del grupo en el
+                desarrollo de la investigación, el sitio web y el material audiovisual:</p>
 
             <div class="tabla-contenedor">
                 <table>
@@ -53,30 +59,33 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><strong style="color: #38bdf8;">Lorena Mejía</strong></td>
-                            <td>Creación y maquetación de la página web, estructura del CSS global y líder del equipo</td>
+                            <td><strong style="color: #38bdf8;">Lorena Esmeralda Mejía Ramos</strong></td>
+                            <td>Creación y maquetación de la página web, estructura del CSS global, diseño responsivo y
+                                liderazgo del equipo.</td>
                         </tr>
                         <tr>
-                            <td><strong>Kathleen Argueta</strong></td>
-                            <td>Grabación y edición del video explicativo del patrón Iterator</td>
+                            <td><strong>Kathleen Abigail Argueta Gómez</strong></td>
+                            <td>Grabación, edición y producción general del video explicativo del patrón Iterator.</td>
                         </tr>
                         <tr>
-                            <td><strong>Diego Baños</strong></td>
-                            <td>Investigación, redacción de contenido del patrón Iterator</td>
+                            <td><strong>Diego Alberto Baños Ehlerman</strong></td>
+                            <td>Investigación técnica y redacción del contenido sobre el problema y la solución.</td>
                         </tr>
                         <tr>
                             <td><strong>Benjamín Trabanino</strong></td>
-                            <td>Desarrollo del código de ejemplo de Iterator</td>
+                            <td>Desarrollo, pruebas y estructuración funcional del código de ejemplo en TypeScript
+                                aplicado a la Playlist musical.</td>
                         </tr>
                         <tr>
-                            <td><strong>José Milán</strong></td>
-                            <td>Desarrollo de contenido para creación del video del patrón Iterator</td>
+                            <td><strong>José Roberto Milán Ramos</strong></td>
+                            <td>Investigación y redacción de la documentación para la sección Cuándo SÍ / Cuándo NO y
+                                apoyo en guión del video.</td>
                         </tr>
                         <tr>
-                            <td><strong>Sergio Mandrujano</strong></td>
-                            <td>Desarrollo de contenido para creación del video del patrón Iterator</td>
+                            <td><strong>Sergio Andrés Mandujano Membreño</strong></td>
+                            <td>Diseño del diagrama de arquitectura ASCII y documentación técnica del Ejemplo Real en la
+                                industria.</td>
                         </tr>
-
                     </tbody>
                 </table>
             </div>
@@ -157,10 +166,10 @@
             document.querySelectorAll('.cinema-panel').forEach((panel, i) => {
                 if (i === 0) return;
 
-                gsap.fromTo(panel, 
-                    { 
-                        opacity: 0, 
-                        rotationX: -20, 
+                gsap.fromTo(panel,
+                    {
+                        opacity: 0,
+                        rotationX: -20,
                         scale: 0.9,
                         z: -150,
                         transformOrigin: 'bottom center',
@@ -212,4 +221,5 @@
         }
     </script>
 </body>
+
 </html>

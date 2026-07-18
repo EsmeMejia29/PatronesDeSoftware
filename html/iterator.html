@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patrón Iterator</title>
+    <title>Patrón Iterator - Proyecto de cátedra</title>
     <link rel="stylesheet" href="../css/patrones.css">
 </head>
+
 <body>
 
     <div id="ambient-bg">
@@ -25,27 +27,32 @@
     </div>
 
     <div class="cinema-viewport">
-        
+
         <p style="margin-top: 40px; margin-bottom: 0; width: 100%; text-align: left;">
-            <a href="../index.html" style="text-decoration: none; font-weight: bold; color: #818cf8; font-size: 0.95rem;">← Volver al Inicio</a>
+            <a href="../index.html"
+                style="text-decoration: none; font-weight: bold; color: #818cf8; font-size: 0.95rem;">← Volver al
+                Inicio</a>
         </p>
 
         <div class="cinema-panel hero-panel" id="panel-0">
             <header class="hero-container">
-                <h1 class="parallax-title" id="p-title">Patrones de Diseño</h1>
-                <h2 class="parallax-subtitle" id="p-subtitle">Iterator Pattern</h2>
+                <h1 class="parallax-title" id="p-title">Patrón Iterator</h1>
+                <h2 class="parallax-subtitle" id="p-subtitle">Recorrer colecciones sin conocer su estructura interna
+                </h2>
             </header>
 
             <div class="quote-box">
                 <p class="interactive-quote">
-                    "Iterator es un patrón de diseño de comportamiento que permite recorrer elementos de una colección sin exponer su representación subyacente."
+                    "Iterator permite recorrer elementos de una colección sin exponer su representación subyacente."
                 </p>
             </div>
 
             <div class="video-btn-card">
                 <div>
-                    <span style="display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #a5b4fc; margin-bottom: 4px; text-align: left;">Recurso Audiovisual</span>
-                    <strong style="color: #fff; font-size: 1rem;">📺 Video Explicativo del Grupo (3-5 min)</strong>
+                    <span
+                        style="display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #a5b4fc; margin-bottom: 4px; text-align: left;">Recurso
+                        Audiovisual</span>
+                    <strong style="color: #fff; font-size: 1rem;">📺 Video Explicativo del Grupo (3 - 5 min)</strong>
                 </div>
                 <div class="video-thumbnail-wrapper" id="openVideoBtn"></div>
             </div>
@@ -55,13 +62,21 @@
             <span class="panel-indicator">CHAPTER 01</span>
             <h3 class="panel-title">1. El Problema</h3>
             <p>
-                Imagina que estás construyendo el backend de una plataforma de e-commerce en El Salvador. Para optimizar las búsquedas rápidas, almacenas el listado de productos internamente en una estructura de <strong>Árbol Binario</strong> compleja. Al mismo tiempo, el módulo de promociones guarda sus datos en una matriz asociativa simple (un <strong>Array</strong> plano).
+                <strong>La Escena:</strong> Imagina que estás desarrollando el backend de un e-commerce.
+                El catálogo de productos vive en un <strong>Árbol Binario</strong> para optimizar las búsquedas rápidas,
+                mientras que las promociones se almacenan en un <strong>Array plano simple</strong>.
             </p>
             <p>
-                <strong>¿Dónde está el dolor real?</strong> Si el componente de facturación o la vista del carrito necesitan recorrer ambas colecciones para calcular un gran total, obligas al código cliente a llenarse de bucles <code>foreach</code> tradicionales para el array, combinados con lógicas recursivas pesadas para poder caminar a través del árbol. 
+                Cuando el carrito de compras o el módulo de facturación necesitan recorrer ambas colecciones para
+                calcular un total, el código cliente termina lleno de bucles <code>foreach</code> para el array,
+                combinados con una lógica de recursividad pesada y compleja para poder caminar a través del árbol
+                binario.
             </p>
             <p>
-                El cliente termina conociendo íntimamente <em>cómo</em> están guardados tus datos. Si el día de mañana decides cambiar el árbol binario por una lista enlazada para mejorar el uso de memoria, **romperás inmediatamente todo el código cliente** del sistema que dependía de esa estructura.
+                <strong>¿Dónde está el dolor real?</strong> El cliente termina conociendo íntimamente <em>cómo</em>
+                están guardados los datos por dentro. Si el día de mañana decides cambiar el árbol binario por una lista
+                enlazada para mejorar el uso de memoria, <strong>romperás inmediatamente todo el código cliente</strong>
+                del sistema que dependía de esa estructura.
             </p>
         </div>
 
@@ -69,125 +84,201 @@
             <span class="panel-indicator">CHAPTER 02</span>
             <h3 class="panel-title">2. La Solución</h3>
             <p>
-                El patrón Iterator extrae la responsabilidad del recorrido de la colección y se la delega a un objeto independiente llamado <strong>Iterador</strong>. Este objeto encapsula de forma absoluta el estado de la iteración (en qué posición va, cuántos elementos quedan) y expone una interfaz pública unificada.
+                El patrón Iterator extrae la responsabilidad del recorrido de la colección y se la delega a un objeto
+                independiente: el <strong>Iterador</strong>. Este objeto encapsula por completo el estado de la
+                iteración (en qué posición va y cuántos elementos quedan) y expone una interfaz pública unificada.
             </p>
             <p>
-                Gracias a esto, al cliente ya no le importa si los productos provienen de un árbol, un array o una base de datos; simplemente interactúa con el iterador pidiéndole el "siguiente" elemento de manera uniforme.
+                Gracias a esto, el cliente solo necesita pedirle el "siguiente" elemento al iterador, ignorando por
+                completo si los datos provienen de un array, un árbol binario o cualquier otra estructura compleja.
             </p>
 
-            <h4 style="margin-top: 30px; margin-bottom: 15px; color: #818cf8;">Diagrama de Clases</h4>
-            <pre style="color: #f8fafc; font-family: monospace; overflow-x: auto; font-size: 0.85rem; line-height: 1.3;">
-+------------------+                   +--------------------+
-|    Aggregate     |------------------>|      Iterator      |
-+------------------+                   +--------------------+
-| + createIterator()|                   | + current()        |
-+------------------+                   | + next()           |
-         ^                             | + hasNext()        |
-         |                             +--------------------+
-+------------------+                             ^
-|ConcreteAggregate |                             |
-+------------------+                   +--------------------+
-| - items: array   |                   |  ConcreteIterator  |
-| + createIterator()|----------------->|--------------------|
-+------------------+                   | - position: int    |
-                                       +--------------------+
+            <h4 style="margin-top: 30px; margin-bottom: 15px; color: #818cf8;">Diagrama de Arquitectura del Sistema</h4>
+            <pre
+                style="color: #f8fafc; font-family: monospace; overflow-x: auto; font-size: 0.82rem; line-height: 1.4;">
++---------------------+                      crea                     +-----------------------+
+|  ProductCollection  |---------------------------------------------->|     ArrayIterator     |
++---------------------+                                               +-----------------------+
+| - products: array   |                       +-------------------+   | - position: int       |
+| + getIterator()     |                       |      Cliente      |   | + current()           |
++---------------------+                       | recorre con:      |   | + next(): void        |
+           |                                  | hasNext() / next()|   | + hasNext(): bool     |
+      implementa                              +-------------------+   +-----------------------+
+           |                                     /             \                  |
+           v                                  usa              usa           implementa
++---------------------+                     /                   \                 |
+|   «interface»       |                    v                     v                v
+|      Aggregate      |          +---------------------+    +-------------------------+
++---------------------+          |     «interface»     |    |       «interface»       |
+| + getIterator()     |          |      Aggregate      |    |        Iterator         |
++---------------------+          +---------------------+    +-------------------------+
+                                                            | + current()             |
+                                                            | + next(): void          |
+                                                            | + hasNext(): bool       |
+                                                            +-------------------------+
             </pre>
 
             <h4 style="margin-top: 30px; margin-bottom: 15px; color: #818cf8;">Estructura de Componentes</h4>
             <ul style="line-height: 1.7; padding-left: 20px;">
-                <li><strong>Iterator:</strong> Define el contrato o interfaz para acceder y recorrer los elementos.</li>
-                <li><strong>ConcreteIterator:</strong> Implementa el algoritmo de recorrido específico.</li>
-                <li><strong>Aggregate (Iterable):</strong> Interfaz para producir iteradores compatibles.</li>
-                <li><strong>ConcreteAggregate:</strong> Mantiene la colección real y fabrica su iterador.</li>
+                <li><strong>Aggregate (Interfaz):</strong> Define el contrato obligatorio para producir iteradores
+                    (<code>getIterator</code>).</li>
+                <li><strong>Iterator (Interfaz):</strong> Define el contrato estándar para recorrer la colección:
+                    <code>current()</code>, <code>next()</code> y <code>hasNext()</code>.</li>
+                <li><strong>ConcreteAggregate (ProductCollection):</strong> Mantiene la colección real de datos y
+                    fábrica su iterador específico.</li>
+                <li><strong>ConcreteIterator (ArrayIterator):</strong> Implementa el algoritmo de recorrido concreto y
+                    administra el estado de posición.</li>
             </ul>
         </div>
 
         <div class="cinema-panel" id="panel-3">
             <span class="panel-indicator">CHAPTER 03</span>
-            <h3 class="panel-title">3. Código Mínimo (Estructura Esencial en PHP)</h3>
-            <p style="margin-bottom: 15px;">Esqueleto funcional que demuestra cómo desacoplar por completo el recorrido del cliente:</p>
-            
-            <pre style="color: #f8fafc; font-family: monospace; overflow-x: auto;">
-&lt;?php
-interface MyIterator {
-    public function current();
-    public function next(): void;
-    public function hasNext(): bool;
+            <h3 class="panel-title">3. Código Mínimo en TypeScript</h3>
+            <p style="margin-bottom: 15px;">A continuación se presenta el esqueleto en código aplicado a una
+                <strong>Playlist musical</strong>, mostrando cómo el cliente recorre las canciones sin conocer el
+                arreglo interno:</p>
+
+            <pre style="color: #f8fafc; font-family: monospace; overflow-x: auto; font-size: 0.9rem; line-height: 1.5;">
+// 1. Contratos del modelo
+type Cancion = { titulo: string; artista: string };
+
+interface IteradorCanciones {
+    hasNext(): boolean;
+    next(): Cancion | null;
 }
 
-class ArrayIterator implements MyIterator {
-    private int $position = 0;
-    public function __construct(private array $items) {}
-
-    public function current() { return $this->items[$this->position]; }
-    public function next(): void { $this->position++; }
-    public function hasNext(): bool { return isset($this->items[$this->position]); }
+interface ColeccionCanciones {
+    crearIterador(): IteradorCanciones;
 }
 
-class ProductCollection {
-    private array $products = [];
-    public function addProduct(string $product): void { $this->products[] = $product; }
-    public function getIterator(): MyIterator { return new ArrayIterator($this->products); }
+// 2. Colección concreta y su Iterador
+class Playlist implements ColeccionCanciones {
+    private canciones: Cancion[] = [];
+
+    public agregar(cancion: Cancion): void {
+        this.canciones.push(cancion);
+    }
+
+    public crearIterador(): IteradorCanciones {
+        return new PlaylistIterator(this.canciones);
+    }
 }
 
-$collection = new ProductCollection();
-$collection->addProduct("Laptop");
-$collection->addProduct("Mouse");
+class PlaylistIterator implements IteradorCanciones {
+    private posicion = 0;
+    constructor(private readonly canciones: ReadonlyArray&lt;Cancion&gt;) {}
 
-$iterator = $collection->getIterator();
-while ($iterator->hasNext()) {
-    echo "Producto: " . $iterator->current() . "\n";
-    $iterator->next();
+    public hasNext(): boolean {
+        return this.posicion &lt; this.canciones.length;
+    }
+
+    public next(): Cancion | null {
+        if (!this.hasNext()) return null;
+        return this.canciones[this.posicion++];
+    }
+}
+
+// 3. Cliente: solo interactúa con hasNext() y next()
+const playlist = new Playlist();
+playlist.agregar({ titulo: "Bohemian Rhapsody", artista: "Queen" });
+playlist.agregar({ titulo: "Hotel California", artista: "Eagles" });
+
+const iterador = playlist.crearIterador();
+while (iterador.hasNext()) {
+    const cancion = iterador.next()!;
+    console.log(`Reproduciendo: ${cancion.titulo} - ${cancion.artista}`);
 }
             </pre>
+            <p style="margin-top: 15px; font-size: 0.95rem; color: #a5b4fc;">
+                <strong>El detalle clave:</strong> La clase <code>Playlist</code> crea el iterador; el bloque
+                <code>while</code> (que representa al cliente) únicamente utiliza las funciones <code>hasNext()</code> y
+                <code>next()</code>, por lo que nunca conoce ni manipula el arreglo interno.
+            </p>
         </div>
 
         <div class="cinema-panel" id="panel-4">
             <span class="panel-indicator">CHAPTER 04</span>
-            <h3 class="panel-title">4. Cuándo SÍ / Cuándo NO</h3>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 10px;">
-                <div>
-                    <h4 style="color: #10b981; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">✔️ Cuándo SÍ</h4>
-                    <ul style="line-height: 1.6; padding-left: 15px; font-size: 0.9rem; margin: 0;">
-                        <li>Colecciones complejas como grafos o árboles jerárquicos.</li>
-                        <li>Diferentes recorridos alternativos sobre una misma estructura.</li>
-                        <li>Polimorfismo unificado en lecturas de colecciones.</li>
+            <h3 class="panel-title">4. Cuándo SÍ / Cuándo NO: El Criterio, no la Receta</h3>
+
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 15px;">
+                <div
+                    style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); padding: 25px; border-radius: 12px;">
+                    <h4
+                        style="color: #10b981; margin-top: 0; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                        Aplícalo cuando:</h4>
+                    <ul
+                        style="line-height: 1.6; padding-left: 18px; font-size: 0.95rem; margin: 0; background: transparent; border: none; padding-top: 0; padding-bottom: 0;">
+                        <li>La estructura de datos subyacente es compleja (árboles binarios, grafos o sistemas con
+                            paginación).</li>
+                        <li>Quieres aislar por completo la lógica de recorrido del módulo cliente (ej. reproducir una
+                            playlist musical).</li>
+                        <li>Necesitas recorrer la misma colección de distintas formas (recorrido secuencial, aleatorio,
+                            filtrado, etc.).</li>
+                        <li>Proteger y encapsular la estructura interna de la colección es una prioridad de
+                            arquitectura.</li>
                     </ul>
                 </div>
-                <div>
-                    <h4 style="color: #f43f5e; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">❌ Cuándo NO</h4>
-                    <ul style="line-height: 1.6; padding-left: 15px; font-size: 0.9rem; margin: 0;">
-                        <li>Colecciones lineales simples donde un bucle nativo basta.</li>
-                        <li>Acceso puramente aleatorio e indexado.</li>
-                        <li>Restricciones extremas de memoria/rendimiento de hardware.</li>
+                <div
+                    style="background: rgba(244, 63, 94, 0.08); border: 1px solid rgba(244, 63, 94, 0.3); padding: 25px; border-radius: 12px;">
+                    <h4
+                        style="color: #f43f5e; margin-top: 0; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                        No lo apliques si:</h4>
+                    <ul
+                        style="line-height: 1.6; padding-left: 18px; font-size: 0.95rem; margin: 0; background: transparent; border: none; padding-top: 0; padding-bottom: 0;">
+                        <li>Vas a procesar un elemento único y aislado (ej. reproducir o escuchar una nota de voz
+                            individual).</li>
+                        <li>La colección es un arreglo plano o una lista simple nativa del lenguaje de programación.
+                        </li>
+                        <li>Un bucle <code>for</code> o <code>foreach</code> nativo resuelve el problema de forma
+                            directa y sin ensuciar la lógica real.</li>
                     </ul>
                 </div>
+            </div>
+
+            <div
+                style="margin-top: 25px; padding: 18px 24px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; border-left: 3px solid #c084fc;">
+                <p style="margin: 0; font-size: 0.95rem; color: #cbd5e1;">
+                    <strong>El costo que siempre pagas:</strong> Más código y una mínima penalidad de rendimiento por
+                    la creación de objetos adicionales. Su uso solo se justifica si recorrer los datos dolía de verdad.
+                </p>
             </div>
         </div>
 
         <div class="cinema-panel" id="panel-5">
             <span class="panel-indicator">CHAPTER 05</span>
-            <h3 class="panel-title">5. Un Ejemplo Real en la Industry</h3>
+            <h3 class="panel-title">5. Un Ejemplo Real en la Industria</h3>
             <p>
-                Un ejemplo real, robusto y de alto impacto en producción ocurre en las <strong>Lazy Collections de Laravel</strong> (implementadas bajo el componente <code>Illuminate\Support\LazyCollection</code>).
+                A lo mejor y ya lo has usado sin saberlo en el backend: las <strong>Lazy Collections de Laravel</strong> (bajo la
+                clase <code>Illuminate\Support\LazyCollection</code>).
             </p>
             <p>
-                Cuando se ejecutan consultas pesadas a través del ORM Eloquent, intentar cargar un millón de registros a la vez colapsaría la memoria. Laravel lo soluciona implementando el patrón Iterator apoyado por generadores (utilizando la palabra clave <code>yield</code>).
+                Este componente resuelve un problema real y crítico en entornos de producción: intentar cargar de golpe
+                un millón de registros de una base de datos utilizando el ORM Eloquent colapsaría la memoria RAM del
+                servidor al instantáneamente.
             </p>
             <p>
-                Esto permite que se utilice un bucle estándar en el controlador, pero manteniendo bajo el capó **un único registro en memoria a la vez**:
+                Laravel lo soluciona implementando el patrón Iterator apoyado en los generadores nativos de PHP
+                (mediante la palabra clave <code>yield</code>). Esto permite escribir un bucle estándar en el
+                controlador, pero manteniendo <strong>un único registro en memoria a la vez</strong>:
             </p>
 
-            <pre style="color: #f8fafc; font-family: monospace; overflow-x: auto; margin-top: 15px;">
+            <pre
+                style="color: #f8fafc; font-family: monospace; overflow-x: auto; margin-top: 15px; font-size: 0.95rem;">
 use App\Models\User;
 
+// En lugar de cargar todo con User::all(), usamos el cursor:
 $users = User::cursor(); 
 
 foreach ($users as $user) {
     echo $user->email; 
 }
             </pre>
+            <p style="margin-top: 15px; font-size: 0.95rem; color: #94a3b8;">
+                ¿Alguna vez utilizaste <code>User::all()</code> con una tabla llena de datos? El método
+                <code>User::cursor()</code> existe justamente para evitar ese desbordamiento, permitiendo el mismo
+                <code>foreach</code> de siempre mientras el patrón Iterator trabaja de forma invisible por debajo.
+            </p>
         </div>
 
     </div>
@@ -209,7 +300,7 @@ foreach ($users as $user) {
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
-        const videoUrl = "https://www.youtube.com/embed/kNez5ppY6EY?autoplay=1"; 
+        const videoUrl = "https://www.youtube.com/embed/kNez5ppY6EY?autoplay=1";
         const modal = document.getElementById('videoModal');
         const iframe = document.getElementById('modalVideoFrame');
 
@@ -221,17 +312,16 @@ foreach ($users as $user) {
 
         const btnAbrir = document.getElementById('openVideoBtn');
         if (btnAbrir) {
-            btnAbrir.addEventListener('click', function(e) {
+            btnAbrir.addEventListener('click', function (e) {
                 e.preventDefault();
-                e.stopPropagation(); 
-                
+                e.stopPropagation();
+
                 if (modal && iframe) {
                     iframe.src = videoUrl;
                     modal.style.setProperty('display', 'flex', 'important');
                     modal.style.setProperty('visibility', 'visible', 'important');
                     modal.style.setProperty('opacity', '1', 'important');
-                    
-                    // Se bloque el scroll del body para que el usuario no pueda desplazarse mientras el modal está abierto
+
                     document.body.style.overflow = 'hidden';
                 }
             });
@@ -239,14 +329,14 @@ foreach ($users as $user) {
 
         const btnCerrar = document.getElementById('closeModal');
         if (btnCerrar) {
-            btnCerrar.addEventListener('click', function(e) {
+            btnCerrar.addEventListener('click', function (e) {
                 e.preventDefault();
                 cerrarModalVideo();
             });
         }
 
         if (modal) {
-            modal.addEventListener('click', function(e) {
+            modal.addEventListener('click', function (e) {
                 if (e.target === modal) {
                     cerrarModalVideo();
                 }
@@ -259,28 +349,8 @@ foreach ($users as $user) {
                 modal.style.setProperty('visibility', 'hidden', 'important');
                 modal.style.setProperty('display', 'none', 'important');
                 iframe.src = "";
-                
-                // Devolvemos el scroll normal
+
                 document.body.style.overflow = 'auto';
-            }
-        }
-
-        if (modal) {
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    cerrarModalVideo();
-                }
-            });
-        }
-
-        function cerrarModalVideo() {
-            if (modal && iframe) {
-                modal.classList.remove('open');
-                modal.style.opacity = '0';
-                setTimeout(() => {
-                    modal.style.setProperty('display', 'none', 'important');
-                    iframe.src = "";
-                }, 400);
             }
         }
 
@@ -347,10 +417,10 @@ foreach ($users as $user) {
             document.querySelectorAll('.cinema-panel').forEach((panel, i) => {
                 if (i === 0) return;
 
-                gsap.fromTo(panel, 
-                    { 
-                        opacity: 0, 
-                        rotationX: -20, 
+                gsap.fromTo(panel,
+                    {
+                        opacity: 0,
+                        rotationX: -20,
                         scale: 0.9,
                         z: -150,
                         transformOrigin: 'bottom center',
@@ -431,4 +501,5 @@ foreach ($users as $user) {
         }
     </script>
 </body>
+
 </html>
