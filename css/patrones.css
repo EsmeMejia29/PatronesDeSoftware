@@ -8,8 +8,8 @@
     --border: #334155;
 }
 
-body { 
-    overflow-x: hidden; 
+body {
+    overflow-x: hidden;
     background-color: #0b0f19;
     color: #f8fafc;
     perspective: 1200px;
@@ -51,20 +51,20 @@ body {
     will-change: transform;
 }
 
-.blob-1 { 
-    width: 450px; 
-    height: 450px; 
-    background: #4f46e5; 
-    top: 10%; 
-    left: -100px; 
+.blob-1 {
+    width: 450px;
+    height: 450px;
+    background: #4f46e5;
+    top: 10%;
+    left: -100px;
 }
 
-.blob-2 { 
-    width: 350px; 
-    height: 350px; 
-    background: #c084fc; 
-    top: 60%; 
-    right: -100px; 
+.blob-2 {
+    width: 350px;
+    height: 350px;
+    background: #c084fc;
+    top: 60%;
+    right: -100px;
 }
 
 .cinema-viewport {
@@ -198,8 +198,7 @@ body {
     width: 140px;
     height: 80px;
     background-color: #070a13;
-    /* Inyecta la miniatura oficial de YouTube directamente */
-    background-image: url('https://img.youtube.com/vi/kNez5ppY6EY/hqdefault.jpg');
+    background-image: url('https://img.youtube.com/vi/THQzx4iD7Pw/hqdefault.jpg');
     background-size: cover;
     background-position: center;
     border-radius: 8px;
@@ -230,36 +229,32 @@ body {
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    min-height: 100% !important;
-    background: linear-gradient(135deg, rgba(7, 10, 19, 0.96) 0%, rgba(15, 23, 42, 0.98) 100%) !important;
+    background: rgba(7, 10, 19, 0.94) !important;
+    backdrop-filter: blur(10px) !important;
     z-index: 99999999 !important;
-    display: none; 
-    transform: none !important;
-    perspective: none !important;
+    display: none;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
     box-sizing: border-box !important;
 }
 
 .video-container-box {
-    position: fixed !important;
-    top: 50vh !important;
-    left: 50vw !important;
-    transform: translate(-50%, -50%) !important; 
-    
-    margin-top: 140px !important; 
-    
-    width: 90vw !important;
-    max-width: 800px !important;
-    aspect-ratio: 16/9 !important;
+    position: relative !important;
+    width: 100% !important;
+    max-width: 850px !important;
+    aspect-ratio: 16 / 9 !important;
     background: #000000 !important;
     border-radius: 16px !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9) !important;
     z-index: 100000000 !important;
+    margin: 0 !important;
 }
 
 .close-modal-btn {
     position: absolute !important;
-    top: -45px !important; 
+    top: -45px !important;
     right: 0 !important;
     background: transparent !important;
     border: none !important;
@@ -309,8 +304,8 @@ pre::before {
     pointer-events: none;
 }
 
-pre:hover::before { 
-    opacity: 1; 
+pre:hover::before {
+    opacity: 1;
 }
 
 .cinema-timeline {
@@ -340,15 +335,33 @@ pre:hover::before {
 }
 
 @media (max-width: 768px) {
-    .parallax-title { font-size: 2.2rem; }
-    .parallax-subtitle { font-size: 1.5rem; }
-    .cinema-panel { padding: 25px; margin: 25px 0; }
-    .cinema-viewport { padding: 0 20px; }
-    .cinema-timeline { right: 15px; }
+    .parallax-title {
+        font-size: 2.2rem;
+    }
+
+    .parallax-subtitle {
+        font-size: 1.5rem;
+    }
+
+    .cinema-panel {
+        padding: 25px;
+        margin: 25px 0;
+    }
+
+    .cinema-viewport {
+        padding: 0 20px;
+    }
+
+    .cinema-timeline {
+        right: 15px;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .cinema-panel { transform: none !important; opacity: 1 !important; }
+    .cinema-panel {
+        transform: none !important;
+        opacity: 1 !important;
+    }
 }
 
 ul {

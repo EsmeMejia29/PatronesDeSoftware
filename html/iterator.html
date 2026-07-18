@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patrón Iterator - Proyecto de cátedra</title>
+    <title>Patrón Iterator - Documentación</title>
     <link rel="stylesheet" href="../css/patrones.css">
 </head>
 
@@ -37,7 +37,7 @@
         <div class="cinema-panel hero-panel" id="panel-0">
             <header class="hero-container">
                 <h1 class="parallax-title" id="p-title">Patrón Iterator</h1>
-                <h2 class="parallax-subtitle" id="p-subtitle">Recorrer colecciones sin conocer su estructura interna
+                <h2 class="parallax-subtitle" id="p-subtitle">Recorre colecciones sin conocer su estructura interna
                 </h2>
             </header>
 
@@ -52,9 +52,10 @@
                     <span
                         style="display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #a5b4fc; margin-bottom: 4px; text-align: left;">Recurso
                         Audiovisual</span>
-                    <strong style="color: #fff; font-size: 1rem;">📺 Video Explicativo del Grupo (3 - 5 min)</strong>
+                    <strong style="color: #fff; font-size: 1rem;">📺 Video Explicativo del grupo.</strong>
                 </div>
-                <div class="video-thumbnail-wrapper" id="openVideoBtn"></div>
+                <div class="video-thumbnail-wrapper" id="openVideoBtn"
+                    style="background-image: url('https://img.youtube.com/vi/THQzx4iD7Pw/hqdefault.jpg');"></div>
             </div>
         </div>
 
@@ -93,7 +94,7 @@
                 completo si los datos provienen de un array, un árbol binario o cualquier otra estructura compleja.
             </p>
 
-            <h4 style="margin-top: 30px; margin-bottom: 15px; color: #818cf8;">Diagrama de Arquitectura del Sistema</h4>
+            <h4 style="margin-top: 30px; margin-bottom: 15px; color: #818cf8;">Diagrama de la arquitectura del software</h4>
             <pre
                 style="color: #f8fafc; font-family: monospace; overflow-x: auto; font-size: 0.82rem; line-height: 1.4;">
 +---------------------+                      crea                     +-----------------------+
@@ -108,11 +109,11 @@
            v                                  usa              usa           implementa
 +---------------------+                     /                   \                 |
 |   «interface»       |                    v                     v                v
-|      Aggregate      |          +---------------------+    +-------------------------+
-+---------------------+          |     «interface»     |    |       «interface»       |
-| + getIterator()     |          |      Aggregate      |    |        Iterator         |
 +---------------------+          +---------------------+    +-------------------------+
-                                                            | + current()             |
+|      Aggregate      |          |     «interface»     |    |       «interface»       |
++---------------------+          |      Aggregate      |    |        Iterator         |
+| + getIterator()     |          +---------------------+    +-------------------------+
++---------------------+                                     | + current()             |
                                                             | + next(): void          |
                                                             | + hasNext(): bool       |
                                                             +-------------------------+
@@ -139,7 +140,6 @@
                 arreglo interno:</p>
 
             <pre style="color: #f8fafc; font-family: monospace; overflow-x: auto; font-size: 0.9rem; line-height: 1.5;">
-// 1. Contratos del modelo
 type Cancion = { titulo: string; artista: string };
 
 interface IteradorCanciones {
@@ -151,7 +151,6 @@ interface ColeccionCanciones {
     crearIterador(): IteradorCanciones;
 }
 
-// 2. Colección concreta y su Iterador
 class Playlist implements ColeccionCanciones {
     private canciones: Cancion[] = [];
 
@@ -178,7 +177,6 @@ class PlaylistIterator implements IteradorCanciones {
     }
 }
 
-// 3. Cliente: solo interactúa con hasNext() y next()
 const playlist = new Playlist();
 playlist.agregar({ titulo: "Bohemian Rhapsody", artista: "Queen" });
 playlist.agregar({ titulo: "Hotel California", artista: "Eagles" });
@@ -198,7 +196,7 @@ while (iterador.hasNext()) {
 
         <div class="cinema-panel" id="panel-4">
             <span class="panel-indicator">CHAPTER 04</span>
-            <h3 class="panel-title">4. Cuándo SÍ / Cuándo NO: El Criterio, no la Receta</h3>
+            <h3 class="panel-title">4. Cuándo SÍ / Cuándo NO</h3>
 
             <div
                 style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 15px;">
@@ -249,7 +247,7 @@ while (iterador.hasNext()) {
             <span class="panel-indicator">CHAPTER 05</span>
             <h3 class="panel-title">5. Un Ejemplo Real en la Industria</h3>
             <p>
-                A lo mejor y ya lo has usado sin saberlo en el backend: las <strong>Lazy Collections de Laravel</strong> (bajo la
+                Quiza  lo has usado sin saberlo en el desarrollo de backend: las <strong>Lazy Collections de Laravel</strong> (bajo la
                 clase <code>Illuminate\Support\LazyCollection</code>).
             </p>
             <p>
@@ -260,14 +258,13 @@ while (iterador.hasNext()) {
             <p>
                 Laravel lo soluciona implementando el patrón Iterator apoyado en los generadores nativos de PHP
                 (mediante la palabra clave <code>yield</code>). Esto permite escribir un bucle estándar en el
-                controlador, pero manteniendo <strong>un único registro en memoria a la vez</strong>:
+                controlador, pero manteniendo bajo el capó <strong>un único registro en memoria a la vez</strong>:
             </p>
 
             <pre
                 style="color: #f8fafc; font-family: monospace; overflow-x: auto; margin-top: 15px; font-size: 0.95rem;">
 use App\Models\User;
 
-// En lugar de cargar todo con User::all(), usamos el cursor:
 $users = User::cursor(); 
 
 foreach ($users as $user) {
@@ -275,7 +272,7 @@ foreach ($users as $user) {
 }
             </pre>
             <p style="margin-top: 15px; font-size: 0.95rem; color: #94a3b8;">
-                ¿Alguna vez utilizaste <code>User::all()</code> con una tabla llena de datos? El método
+                ¿Alguna vez utilizaste <code>User::all()</code> con una tabla masiva? El método
                 <code>User::cursor()</code> existe justamente para evitar ese desbordamiento, permitiendo el mismo
                 <code>foreach</code> de siempre mientras el patrón Iterator trabaja de forma invisible por debajo.
             </p>
@@ -300,14 +297,12 @@ foreach ($users as $user) {
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
-        const videoUrl = "https://www.youtube.com/embed/kNez5ppY6EY?autoplay=1";
+        const videoUrl = "https://www.youtube.com/embed/THQzx4iD7Pw?autoplay=1";
         const modal = document.getElementById('videoModal');
         const iframe = document.getElementById('modalVideoFrame');
 
         if (modal) {
             modal.style.setProperty('display', 'none', 'important');
-            modal.style.setProperty('opacity', '0', 'important');
-            modal.style.setProperty('visibility', 'hidden', 'important');
         }
 
         const btnAbrir = document.getElementById('openVideoBtn');
@@ -319,12 +314,17 @@ foreach ($users as $user) {
                 if (modal && iframe) {
                     iframe.src = videoUrl;
                     modal.style.setProperty('display', 'flex', 'important');
-                    modal.style.setProperty('visibility', 'visible', 'important');
-                    modal.style.setProperty('opacity', '1', 'important');
-
                     document.body.style.overflow = 'hidden';
                 }
             });
+        }
+
+        function cerrarModalVideo() {
+            if (modal && iframe) {
+                modal.style.setProperty('display', 'none', 'important');
+                iframe.src = "";
+                document.body.style.overflow = 'auto';
+            }
         }
 
         const btnCerrar = document.getElementById('closeModal');
@@ -341,17 +341,6 @@ foreach ($users as $user) {
                     cerrarModalVideo();
                 }
             });
-        }
-
-        function cerrarModalVideo() {
-            if (modal && iframe) {
-                modal.style.setProperty('opacity', '0', 'important');
-                modal.style.setProperty('visibility', 'hidden', 'important');
-                modal.style.setProperty('display', 'none', 'important');
-                iframe.src = "";
-
-                document.body.style.overflow = 'auto';
-            }
         }
 
         if (!reducedMotion) {
